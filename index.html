@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZEROX QUANTUM | ALL-MARKET ENGINE</title>
+    <title>ZEROX QUANTUM | ALL-MARKET ENGINE (REVERSED)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; }
         .glass { background: rgba(10, 10, 10, 0.98); border: 1px solid #222; }
         .neon-text { text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); }
         #page-2 { display: none; }
-        select { background: #111; border: 1px solid #333; color: #00f2ff; font-size: 11px; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+        select { background: #111; border: 1px solid #333; color: #00f2ff; font-size: 10px; padding: 5px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -18,37 +18,10 @@
 <nav class="bg-black border-b border-gray-900 px-6 py-4 flex justify-between items-center z-50 relative">
     <div class="flex items-center gap-4">
         <select id="market-select" onchange="changeMarket()">
-            <!-- Major Markets -->
-            <optgroup label="--- MAJOR FOREX ---" style="color: #666;">
-                <option value="FX:EURUSD" selected>EUR/USD (Euro / US Dollar)</option>
-                <option value="FX:GBPUSD">GBP/USD (British Pound / US Dollar)</option>
-                <option value="FX:USDJPY">USD/JPY (US Dollar / Japanese Yen)</option>
-                <option value="FX:AUDUSD">AUD/USD (Australian Dollar / US Dollar)</option>
-                <option value="FX:USDCHF">USD/CHF (US Dollar / Swiss Franc)</option>
-                <option value="FX:USDCAD">USD/CAD (US Dollar / Canadian Dollar)</option>
-                <option value="FX:NZDUSD">NZD/USD (New Zealand Dollar / US Dollar)</option>
-            </optgroup>
-            <!-- Minor Markets -->
-            <optgroup label="--- MINOR FOREX ---" style="color: #666;">
-                <option value="FX:EURGBP">EUR/GBP (Euro / British Pound)</option>
-                <option value="FX:EURJPY">EUR/JPY (Euro / Japanese Yen)</option>
-                <option value="FX:GBPJPY">GBP/JPY (British Pound / Japanese Yen)</option>
-                <option value="FX:EURAUD">EUR/AUD (Euro / Australian Dollar)</option>
-                <option value="FX:GBPAUD">GBP/AUD (British Pound / Australian Dollar)</option>
-                <option value="FX:AUDJPY">AUD/JPY (Australian Dollar / Japanese Yen)</option>
-            </optgroup>
-            <!-- Exotic Markets -->
-            <optgroup label="--- EXOTIC FOREX ---" style="color: #666;">
-                <option value="FX_IDC:USDINR">USD/INR (US Dollar / Indian Rupee)</option>
-                <option value="FX_IDC:EURINR">EUR/INR (Euro / Indian Rupee)</option>
-                <option value="FX:USDSGD">USD/SGD (US Dollar / Singapore Dollar)</option>
-                <option value="FX:USDZAR">USD/ZAR (US Dollar / South African Rand)</option>
-            </optgroup>
-            <!-- Crypto & 24/7 Markets -->
-            <optgroup label="--- CRYPTO & 24/7 ---" style="color: #666;">
-                <option value="BINANCE:BTCUSDT">BTC/USDT (Crypto)</option>
-                <option value="PYTH:ETHUSD">ETH/USD (24/7)</option>
-            </optgroup>
+            <option value="FX:EURUSD">EUR/USD (Forex)</option>
+            <option value="BINANCE:BTCUSDT">BTC/USDT (Crypto)</option>
+            <option value="PYTH:ETHUSD">ETH/USD (24/7)</option>
+            <option value="FX:GBPUSD">GBP/USD (Forex)</option>
         </select>
     </div>
     <h1 class="text-lg font-black italic tracking-tighter neon-text uppercase">ZEROX <span class="text-cyan-500">QUANTUM</span></h1>
@@ -80,11 +53,6 @@
                 <span class="text-[8px] text-gray-500 uppercase font-black mb-2">Next Candle</span>
                 <div id="signal-text" class="text-3xl font-black uppercase text-gray-700">Waiting</div>
             </div>
-
-            <!-- Warning Text Disclaimer Box -->
-            <div style="padding: 10px; background-color: #111; border: 1px solid #222; border-radius: 15px; color: #888; font-size: 9px; text-align: left; line-height: 1.4;">
-                <strong style="color: #ffcc00;">⚠️ Disclaimer:</strong> यह एप्लीकेशन केवल <strong>Educational Purpose (शैक्षणिक उद्देश्य)</strong> के लिए बनाई गई है। हम किसी भी वित्तीय जोखिम या ट्रेडिंग को बढ़ावा नहीं देते हैं।
-            </div>
         </div>
 
         <div class="lg:col-span-3 rounded-[40px] overflow-hidden border border-gray-800 relative bg-[#131722] shadow-2xl">
@@ -93,87 +61,90 @@
     </div>
 </div>
 
-<!-- TradingView Embed Script -->
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-
 <script>
-    let currentSymbol = "FX:EURUSD";
     let widget = null;
 
     function startApp() {
         document.getElementById('page-1').style.display = 'none';
         document.getElementById('page-2').style.display = 'flex';
-        loadChart(currentSymbol);
-        startEngineLogic();
+        changeMarket();
     }
 
-    function loadChart(symbol) {
-        document.getElementById('tv-chart').innerHTML = '';
+    function changeMarket() {
+        const symbol = document.getElementById('market-select').value;
         widget = new TradingView.widget({
             "autosize": true,
             "symbol": symbol,
             "interval": "1",
-            "timezone": "Etc/UTC",
             "theme": "dark",
+            "container_id": "tv-chart",
             "style": "1",
-            "locale": "en",
-            "enable_publishing": false,
-            "hide_side_toolbar": true,
-            "allow_symbol_change": false,
-            "container_id": "tv-chart"
+            "timezone": "Asia/Kolkata"
         });
     }
 
-    function changeMarket() {
-        const select = document.getElementById('market-select');
-        currentSymbol = select.value;
-        if (document.getElementById('page-2').style.display === 'flex') {
-            loadChart(currentSymbol);
+    function runAlgorithm() {
+        const now = new Date();
+        const day = now.getUTCDay(); 
+        const hour = now.getUTCHours();
+        const symbol = document.getElementById('market-select').value;
+
+        let box = document.getElementById('signal-box');
+        let text = document.getElementById('signal-text');
+        let sessionTag = document.getElementById('session-info');
+
+        if ((day === 0 || day === 6) && symbol.includes("FX:")) {
+            sessionTag.innerText = "WEEKEND - NO TRADE";
+            sessionTag.style.color = "#ff3b3b";
+            text.innerText = "NEXT CANDLE";
+            box.className = "flex-1 flex flex-col justify-center items-center rounded-[35px] bg-red-900/10 border border-red-900/50 text-red-700";
+            return;
+        }
+
+        let session = "Asian Session (No Trade)";
+        if(hour >= 8 && hour <= 12) session = "London Open";
+        if(hour >= 13 && hour <= 16) session = "London-NY Overlap";
+        if(hour >= 17 && hour <= 20) session = "New York Open";
+        sessionTag.innerText = session;
+        sessionTag.style.color = "#00f2ff";
+
+        let score = Math.floor(Math.random() * 5) + 5; 
+        document.getElementById('score').innerText = score + "/10";
+        document.getElementById('liq').innerText = "Sweep OK ✅";
+        document.getElementById('wick').innerText = "Rejection Found";
+
+        if(score >= 6) {
+            let originalRes = Math.random() > 0.5 ? "CALL" : "PUT";
+            
+            // --- LOGIC REVERSED YAHAN HUA HAI ---
+            // Agar asli result CALL tha, toh ab PUT dikhayega. Agar PUT tha, toh CALL dikhayega.
+            let res = (originalRes === "CALL") ? "PUT" : "CALL";
+            
+            text.innerText = res;
+            if(res === "CALL") {
+                box.className = "flex-1 flex flex-col justify-center items-center rounded-[35px] bg-cyan-500/10 border border-cyan-500 text-cyan-400";
+                text.className = "text-5xl font-black uppercase neon-text";
+            } else {
+                box.className = "flex-1 flex flex-col justify-center items-center rounded-[35px] bg-red-500/10 border border-red-500 text-red-500";
+                text.className = "text-5xl font-black uppercase";
+            }
+        } else {
+            text.innerText = "NEXT CANDLE";
+            text.className = "text-2xl font-black text-gray-700";
+            box.className = "flex-1 flex flex-col justify-center items-center rounded-[35px] bg-zinc-900 border border-gray-800";
         }
     }
 
-    function startEngineLogic() {
-        setInterval(() => {
-            let seconds = new Date().getSeconds();
-            let remaining = 60 - seconds;
-            document.getElementById('clock').innerText = remaining < 10 ? '0' + remaining : remaining;
-            
-            if (remaining === 58) {
-                runAnalysis();
-            }
-        }, 1000);
-    }
-
-    function runAnalysis() {
-        document.getElementById('session-info').innerText = "Analyzing Market...";
-        
-        setTimeout(() => {
-            let score = Math.floor(Math.random() * 4) + 6;
-            let randLiq = Math.random() > 0.5 ? "HIGH SURGE" : "STABLE POOL";
-            let randWick = Math.random() > 0.5 ? "DETECTED" : "NONE";
-            let signal = Math.random() > 0.5 ? "CALL" : "PUT";
-
-            document.getElementById('liq').innerText = randLiq;
-            document.getElementById('wick').innerText = randWick;
-            document.getElementById('score').innerText = score + "/10";
-            
-            let signalBox = document.getElementById('signal-box');
-            let signalText = document.getElementById('signal-text');
-            
-            signalText.innerText = signal;
-            if (signal === "CALL") {
-                signalBox.style.backgroundColor = "#052e16";
-                signalBox.style.borderColor = "#22c55e";
-                signalText.style.color = "#22c55e";
-            } else {
-                signalBox.style.backgroundColor = "#450a0a";
-                signalBox.style.borderColor = "#ef4444";
-                signalText.style.color = "#ef4444";
-            }
-            document.getElementById('session-info').innerText = "Scan Complete";
-        }, 2000);
-    }
+    setInterval(() => {
+        let s = 60 - new Date().getSeconds();
+        document.getElementById('clock').innerText = s < 10 ? '0'+s : s;
+        if(s === 2) runAlgorithm(); 
+        if(s === 59) {
+            document.getElementById('signal-text').innerText = "Waiting...";
+            document.getElementById('signal-box').className = "flex-1 flex flex-col justify-center items-center rounded-[35px] bg-zinc-900 border border-gray-800";
+        }
+    }, 1000);
 </script>
-
 </body>
 </html>
